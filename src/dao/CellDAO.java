@@ -13,6 +13,7 @@ public class CellDAO {
         String sql = "INSERT INTO [dbo].[stations] ([lcid],[lac],[cid],[mnc],[lat],[lon],[azimuth],[adres],[Shape])\n" +
                 "VALUES(?,?,?,?,?,?,?,?,geometry::STGeomFromText(?, 4326))";
 //'Point (20 180)'
+        int counter=0;
         for (Cell cell:cells) {
             try (Connection connection = ConnectionDB.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
@@ -25,8 +26,18 @@ public class CellDAO {
                 preparedStatement.setDouble(7,cell.getAzimuth());
                 preparedStatement.setString(8,cell.getAdres());
                 preparedStatement.setString(9,"Point ("+cell.getLon()+" "+cell.getLat()+")");
+
                 preparedStatement.execute();
+                //preparedStatement.addBatch();
+                counter++;
+                if (counter % 1000 == 0 || counter == cells.size()) {
+                    //preparedStatement.executeBatch(); // Execute every 1000 items.
+                    System.out.println(counter);
+                    Thread.currentThread().sleep(30000);
+                }
             } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
