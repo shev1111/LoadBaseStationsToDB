@@ -33,7 +33,7 @@ public class CellDAO {
                 if (counter % 1000 == 0 || counter == cells.size()) {
                     //preparedStatement.executeBatch(); // Execute every 1000 items.
                     System.out.println(counter);
-                    Thread.currentThread().sleep(30000);
+                    Thread.currentThread().sleep(3000);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
